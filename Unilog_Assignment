@@ -1,0 +1,267 @@
+package unilog;
+
+
+public class Unilog {
+
+	public static void main(String[] args) {
+
+		DoublyLinkedList<Integer> d = new DoublyLinkedList<>();
+
+		// Adding Elements
+		System.out.println("Adding elements at Last Position");
+		d.addNodeLast(10);
+		d.addNodeLast(20);
+		d.addNodeLast(50);
+		d.addNodeLast(30);
+
+		d.printNodes();
+		System.out.println();
+
+		// Adding elements at first
+		System.out.println("Adding elements at First Position");
+		d.addNodeFirst(100);
+		d.addNodeFirst(400);
+
+		d.printNodes();
+		System.out.println();
+
+		// Adding elements at given index
+		System.out.println("Adding elements at given index");
+		d.addNodeAtIndex(300, 4);
+
+		d.printNodes();
+		System.out.println();
+
+		// Removing first element
+		System.out.println("Removing elements from the first position");
+		d.removeFirstNode();
+
+		d.printNodes();
+		System.out.println();
+
+		// Removing last element
+		System.out.println("Removing elements from the last position");
+		d.removeLastNode();
+
+		d.printNodes();
+		System.out.println();
+
+		// Removing element at given index
+		System.out.println("Removing element from given index");
+		d.removeNodeAtIndex(2);
+
+		d.printNodes();
+		System.out.println();
+
+		// Finding element at given index
+		System.out.println("Finding element at given index");
+		d.findANodeAtIndex(3);
+
+		// Printing all elements
+		System.out.println("Printing all Nodes");
+		d.printNodes();
+	}
+}
+class Node<T> {
+
+	T data;
+	Node<T> previous;
+	Node<T> next;
+
+	public Node(T data) {
+		this.data = data;
+	}
+}
+class DoublyLinkedList<T> {
+
+	Node<T> head, tail = null;
+
+	public boolean nodeNotNull() {
+
+		if (this.head == null) {
+			return false;
+		}
+		return true;
+	}
+
+	// Add first element
+	public void addHeadAndTail(T data) {
+
+		Node<T> newNode = new Node<T>(data);
+
+		this.head = this.tail = newNode;
+		this.head.previous = null;
+		this.tail.next = null;
+	}
+
+	// Add node first
+	public void addNodeFirst(T data) {
+
+		Node<T> newNode = new Node<T>(data);
+
+		if (this.nodeNotNull()) {
+			newNode.next = this.head;
+			newNode.previous = null;
+			this.head.previous = newNode;
+			this.head = newNode;
+		} else {
+			this.addHeadAndTail(data);
+		}
+
+	}
+
+	// Add node last
+	public void addNodeLast(T data) {
+
+		Node<T> newNode = new Node<T>(data);
+
+		if (this.nodeNotNull()) {
+			this.tail.next = newNode;
+			newNode.previous = this.tail;
+			this.tail = newNode;
+			this.tail.next = null;
+		} else {
+			this.addHeadAndTail(data);
+		}
+	}
+
+	// Add node at an index
+	public void addNodeAtIndex(T data, int index) {
+
+		Node<T> newNode = new Node<T>(data);
+		int count = 0;
+
+		if (this.nodeNotNull()) {
+			Node<T> current = this.head;
+
+			while (current.next != null) {
+				count++;
+				if (count == index) {
+
+					newNode.next = current.next;
+					newNode.previous = current;
+					current.next.previous = newNode;
+					current.next = newNode;
+					break;
+				}
+				current = current.next;
+			}
+
+			if (count != index) {
+				System.out.println("Number of nodes is less than the index passed | Adding element at the last");
+				this.addNodeLast(data);
+			}
+
+		} else {
+			System.out.println("Doubly LinkedList is Empty | Adding first element");
+			this.addHeadAndTail(data);
+		}
+
+	}
+
+	// Remove first Node
+	public void removeFirstNode() {
+
+		if (!this.nodeNotNull()) {
+			System.out.println("Doubly LinkedList is empty");
+			return;
+		} else if (this.head.next == null) {
+			this.head = null;
+		} else {
+			this.head = this.head.next;
+			this.head.previous = null;
+		}
+
+	}
+
+	// Remove Last Node
+	public void removeLastNode() {
+
+		if (!this.nodeNotNull()) {
+			System.out.println("Doubly LinkedList is empty");
+			return;
+		} else if (this.tail.previous == null) {
+			this.tail = null;
+			this.head = null;
+		} else {
+			this.tail = this.tail.previous;
+			this.tail.next = null;
+		}
+	}
+
+	// Remove Node at an index
+	public void removeNodeAtIndex(int index) {
+
+		int count = 0;
+
+		if (!this.nodeNotNull()) {
+			System.out.println("Doubly LinkedList is empty");
+		} else {
+
+			Node<T> current = this.head;
+
+			while (current.next != null) {
+
+				if (count == index) {
+
+					current.previous.next = current.next;
+					current.next.previous = current.previous;
+					current.previous = null;
+					current.next = null;
+					return;
+				}
+				count++;
+				current = current.next;
+			}
+
+			if (count - 1 != index) {
+				System.out.println("Number of nodes is less than the index passed | Removing last element");
+				this.removeLastNode();
+			}
+		}
+
+	}
+
+	// Find a node with index
+	public void findANodeAtIndex(int index) {
+
+		int count = 0;
+		Node<T> current = this.head;
+
+		if (!this.nodeNotNull()) {
+			System.out.println("Doubly LinkedList is Empty");
+			return;
+		}
+
+		while (current != null) {
+			if (count == index) {
+				System.out.println(current.data);
+				return;
+			}
+			count++;
+			current = current.next;
+		}
+
+		if (count - 1 != index) {
+			System.out.println("Number of nodes is less than the index passed | No element found");
+		}
+	}
+
+	// Printing all nodes
+	public void printNodes() {
+
+		Node<T> current = this.head;
+
+		if (!this.nodeNotNull()) {
+			System.out.println("Doubly LinkedList is Empty");
+			return;
+		}
+
+		System.out.print("Nodes are : ");
+
+		while (current != null) {
+			System.out.print(current.data + " ");
+			current = current.next;
+		}
+	}
+}
